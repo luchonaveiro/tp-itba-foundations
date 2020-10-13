@@ -1,0 +1,8 @@
+{
+	"DATABASE_HOST": "pg-docker",
+	"DATABASE_PORT": 5432,
+	"DATABASE": "postgres",
+	"DATABASE_USER": "postgres",
+	"DATABASE_PASSWORD": "docker"
+
+}
