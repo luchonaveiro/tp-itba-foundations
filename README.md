@@ -1,6 +1,6 @@
 # **TP Final Foundations & Cloud Architect**
 
-La base de datos elegida para esta trabajo, es una correspondiente a información sobre las carreras de Fórmula 1 (F1).
+La base de datos elegida para esta trabajo, es una correspondiente a la información sobre las carreras de Fórmula 1 (F1).
 Los datos los consigo de este [sitio](http://ergast.com/mrd/db/), y contiene datos de todas las carreras de la F1 desde el 5 de Mayo de 1950, hasta la última que ocurrió el 11 de octubre de 2020. Estos datos se actualizan unos minutos terminada cada carrera y tiene información de todo tipo, entre los que se destacan:
 
 - resultados de las carreras, con las posiciones de todos los pilotos que la corrieron.
@@ -12,7 +12,7 @@ Los datos los consigo de este [sitio](http://ergast.com/mrd/db/), y contiene dat
 - datos de cada vuelta, de cada circuito para cada piloto que la corrió.
 
 
-Elegí esta base de datos, por mi interés en la F1, y porque seguramente encuentre cosas super interesantes cuando me ponga a consultar esta iniformación. 
+Elegí esta base de datos, por mi interés en la F1, y porque seguramente encuentre cosas super interesantes cuando me ponga a consultar esta información. 
 
 Este trabajo consta de 3 partes, que mediante Docker, Python y SQL, se debe:
  - levantar una base de datos (elegí usar PostgreSQL) y crear la estructura de las tablas.
@@ -82,14 +82,14 @@ $ docker run --rm --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -
 
 donde:
 - `--rm` es una buena práctica automáticamente remover el container.
-- `--name` es el nombre con el que nos vamos a referir al container una vez que esta corriendo.
+- `--name` es el nombre con el que nos vamos a referir al container una vez que esta corriendo, esto es super útil para referirnos con este nombre a este container dentro de la red que creamos previamente.
 - `-e` le pasamos una variable de entorno, en este caso es la contraseña para la base de datos.
 - `-d` para que corra en segundo plano.
 - `-p` enlaza nuestro puerto 5432 con el puerto 5432 del container.
 - `--net` conecta el container a la red `tp-itba` que creamos al principio de todo.
 - `postgres:13.0` es la imagen y version que queremos correr. Si no la encuentra en registry local, la descarrga de Docker Hub.
 
-Una vez que ya este corriendo, buildeamos otro container y le copiamos el script de bash que define y crea las tablas en la base de dagtos que acabamos de levantar. Suponiendo que estamos en la tuta principalm del proyecto ejecutamos los siguientes comandos:
+Una vez que ya este corriendo, quiere decir que se esta exponiendo una base de datos en el puerto 5432. Ahora buildeamos otro container y le copiamos el script de bash que define y crea las tablas en la base de dagtos que acabamos de levantar. Suponiendo que estamos en la tuta principalm del proyecto ejecutamos los siguientes comandos:
 
 ```
 $ cd db
@@ -125,10 +125,14 @@ Una vez que ya tenemos la base de datos corriendo, iniciamos el proceso de ETL d
 Para esto, volvemos al directorio principal del proyecto e ingresamos al directorio `/etl`, y buildeamos la imagen de Docker que contiene el script de Python con el proceso de ETL.
 
 ```
-$ cd ../
-$ cd etl
+$ cd ../etl
 $ docker build -t etl .
-$ docker run --rm --net=tp-itba etl
+$ docker run --rm -e DATABASE_HOST=pg-docker \
+-e DATABASE_PORT=5432 \
+-e DATABASE=postgres \
+-e DATABASE_USER=postgres \
+-e DATABASE_PASSWORD=docker \
+--net=tp-itba etl
 ```
 
 Habiendo ejecutado ese comando, vamos a ver los logs impresos en la terminal de que se descargó la base de la F1, y se estan insertando en cada tabla correspondiente:
@@ -142,10 +146,14 @@ Ahora que ya tenemos la base de datos populada con toda la información podemos 
 Para ejecutar estos reportes, buildeamos y corremos la imagen de Docker que se encuentra en el directorio `/reports`:
 
 ```
-$ cd ../
-$ cd reports
+$ cd ../reports
 $ docker build -t reports .
-$ docker run --rm --net=tp-itba reports
+$ docker run --rm -e DATABASE_HOST=pg-docker \
+-e DATABASE_PORT=5432 \
+-e DATABASE=postgres \
+-e DATABASE_USER=postgres \
+-e DATABASE_PASSWORD=docker \
+--net=tp-itba reports
 ```
 Acá vamos a ver como se van imprimiendo los resultados de las queries en la terminal. Es importante notar que segun la fecha en la que se ejecute el proceso anterior, los resultados pueden variar levemente a los que yo voy a presentar, dado que esta información se va actualizando con las nuevas carreras.
 
@@ -161,7 +169,7 @@ Obvio que encontramos que los dos piolotos de Mercedez (Hamilton y Bottas) estan
 
 ### Query 2
 
-Aca obtenemos los pilotos que en los ultimos 5 años tengan mas de 5 carrreras corridas, ordenados por los puntos promedio por carrera obtenidos.
+Aca obtenemos los pilotos que en los ultimos 5 años tengan mas de 5 carrreras corridas, traemos los puntos promedios por carrera y la cantidad de carrearas corridas, ordenados por los puntos promedio por carrera obtenidos.
 
 Volvemos a encontrar que Perez es algo superior que Esteban Ocon, y obvio que los top pilotos de los ultimos 5 años estan ahi primeros.
 
@@ -169,7 +177,7 @@ Volvemos a encontrar que Perez es algo superior que Esteban Ocon, y obvio que lo
 
 ### Query 3
 
-En este reporte, encontramos la proporción de pilotos en toda la historia,que largando en las distintas posiciones, llegaron en primer lugar al final de la carrera. O sea, el 42% de pilotos que largaron en primer lugar, terminaron ganando la carrera, mientras que el 24% de los que la arrancaron en segundo lugar, levantaron el título.
+En este reporte, encontramos la proporción de pilotos en toda la historia, que largando en las distintas posiciones, llegaron en primer lugar al final de la carrera. O sea, el 42% de pilotos que largaron en primer lugar, terminaron ganando la carrera, mientras que el 24% de los que la arrancaron en segundo lugar, levantaron el título.
 
 Haciendo un análisis parecido, llegamos a que el 63% de los que largaron en la primer posición, llegaron en primer, segundo o tercer lugar. Mientras que el 54% de los pilotos que largaron en segundo lugar, se subieron al podio.
 
@@ -202,9 +210,9 @@ Aca nos centramos más en los equipos y su performance en términos de paradas e
 Aca respondemos la pregunta que nos estamos haciendo todos (o deberiamos). 
 
 **Schumacher vs Hamilton**: quien es el rey de la F1?
-Vemos que con la victoria de este domingo 11/10 en el GP de Eifel, Hamilton lo empato a Schumacher en la cantidad de carreras ganadas, solo que Hamilton lo hizo en menos carreras, llegando a ganar el 34.8% de sus carreras (y 61.3% de podios), mientras que Schumacher gano el 29,5% de todas las carreras y ese subió al podio en el 50.3%.
+Vemos que con la victoria de este domingo 11/10 en el GP de Eifel, Hamilton lo empato a Schumacher en la cantidad de carreras ganadas, solo que Hamilton lo hizo en menos carreras, llegando a ganar el 34.8% de sus carreras y registrando 61.3% de podios, mientras que Schumacher gano el 29.5% de todas las carreras y ese subió al podio en el 50.3%.
 
-Obviamente que son dos mosntruos de la F1, y no queda otra que disfrutar de las carreras de Hamilton que sigue estando vigente.
+Obviamente que son dos monstruos de la F1, y no queda otra que disfrutar de las carreras de Hamilton que sigue estando vigente.
 
 ![logs query 6](./assets/reports/query_7_log.png)
 
