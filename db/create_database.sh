@@ -1,6 +1,6 @@
 #!/bin/bash
 
 echo 'Creating database...'
-psql -h pg-docker -U postgres -d postgres -f init.sql
+psql -h $DB_HOST -U $DB_USER -d $DB_DATABASE -f init.sql
 echo 'Database created!'
 

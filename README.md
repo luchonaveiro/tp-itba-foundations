@@ -1,14 +1,15 @@
-# **TP Final Foundations**
+# **TP Final Foundations & Cloud Architect**
 
 La base de datos elegida para esta trabajo, es una correspondiente a información sobre las carreras de Fórmula 1 (F1).
-Los datos los consigo de este [sitio](http://ergast.com/mrd/db/), y contiene datos de todas las carreras de la F1 desde el 5 de Mayo de 1950, hasta la última que ocurrió el 11 de octubre de 2020. Estos datos se actualizan unos minutos terminada cada carrera y tiene información de toodo tipo:
+Los datos los consigo de este [sitio](http://ergast.com/mrd/db/), y contiene datos de todas las carreras de la F1 desde el 5 de Mayo de 1950, hasta la última que ocurrió el 11 de octubre de 2020. Estos datos se actualizan unos minutos terminada cada carrera y tiene información de todo tipo, entre los que se destacan:
 
-- resultados de las carreras, con las posiciones de todos los pilotos que la corrieron
-- datos de las clasificaciones (las carreras del dia previo que definen las posiciones de largada)
-- datos de los equipos
-- datos de los pilotos
-- datos de las paradas en los boxes
-- datos de los circuitos
+- resultados de las carreras, con las posiciones de todos los pilotos que la corrieron.
+- datos de las clasificaciones (las carreras del dia previo que definen las posiciones de largada).
+- datos de los equipos.
+- datos de los pilotos.
+- datos de las paradas en los boxes.
+- datos de los circuitos.
+- datos de cada vuelta, de cada circuito para cada piloto que la corrió.
 
 
 Elegí esta base de datos, por mi interés en la F1, y porque seguramente encuentre cosas super interesantes cuando me ponga a consultar esta iniformación. 
@@ -18,51 +19,102 @@ Este trabajo consta de 3 partes, que mediante Docker, Python y SQL, se debe:
  - popular esa base de datos con los datos de la F1.
  - realizar consultas sobre esa base de datos.
 
+## **Estructura del Proyecto**
+El proyecto esta separado en distintos directorios, uno para cada parte del proceso:
+- `/db` tiene los scripts y Dockerfile necesarios para la creación de la base de datos.
+- `/etl` tiene los scripts, archivos y Dockerfile necesarios para ejecutar el proceso de ETL.
+ - `/reports` tiene los scripts, queries, archivos y Dockerfile necesarios para construir los reportes consultado en la base de datos e imprimierlos en la términal.
+ - `/assets` tiene las imagenes que estan incluidas en este README.
+
+Osea, generando un árbol del direcorio, obtenemos lo siguiente:
+
+```
+📦tp-itba-foundations
+   - Archivos .PNG utiles para el README.md
+ ┣ 📂assets 
+ ┃ ┗ ...
+   - Archivos referentes a la base de datos
+ ┣ 📂db
+ ┃ ┣ 📜Dockerfile
+ ┃ ┣ 📜create_database.sh
+ ┃ ┗ 📜init.sql
+   - Archivos referentes a la ejecución del ETL
+ ┣ 📂etl
+ ┃ ┣ 📜Dockerfile
+ ┃ ┣ 📜config.json
+ ┃ ┣ 📜etl.py
+ ┃ ┗ 📜requirements.txt
+   - Archivos referentes a la generación de reportes
+ ┣ 📂reports
+ ┃ ┣ 📂queries
+ ┃ ┃ ┣ 📜query_1.sql
+ ┃ ┃ ┣ 📜query_2.sql
+ ┃ ┃ ┣ 📜query_3.sql
+ ┃ ┃ ┣ 📜query_4.sql
+ ┃ ┃ ┣ 📜query_5.sql
+ ┃ ┃ ┣ 📜query_6.sql
+ ┃ ┃ ┗ 📜query_7.sql
+ ┃ ┣ 📜Dockerfile
+ ┃ ┣ 📜config.json
+ ┃ ┣ 📜reports.py
+ ┃ ┗ 📜requirements.txt
+ ┣ 📜README.md
+ ┗ 📜Trabajo Practico - CDE - Foundations.pdf
+```
+
+
+## **Docker Network**
+Primero vamos a crear la red en la que van a correr todos los containers. De esta manera podemos comunicar los containers entre si. Ejecutamos el siguiente comando que crea la red _tp-itba_:
+
+```
+$ docker network create tp-itba
+```
+
 
 ## **Base de Datos**
 
 Como comenté, elegí usar PostgreSQL como base de datos para guardar toda la información de la F1.
-La vamos a levantar mediante un container de Docker. Para ello, tenemos que ejeuctar los siguientes comandos, suponiendo que estamos parados sobre la ruta principal de este directorio:
+La vamos a levantar mediante un container de Docker. Para ello, tenemos que ejecutar lo siguiente
+
+```
+$ docker run --rm --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 --net=tp-itba postgres:13.0
+````
+
+donde:
+- `--rm` es una buena práctica automáticamente remover el container.
+- `--name` es el nombre con el que nos vamos a referir al container una vez que esta corriendo.
+- `-e` le pasamos una variable de entorno, en este caso es la contraseña para la base de datos.
+- `-d` para que corra en segundo plano.
+- `-p` enlaza nuestro puerto 5432 con el puerto 5432 del container.
+- `--net` conecta el container a la red `tp-itba` que creamos al principio de todo.
+- `postgres:13.0` es la imagen y version que queremos correr. Si no la encuentra en registry local, la descarrga de Docker Hub.
+
+Una vez que ya este corriendo, buildeamos otro container y le copiamos el script de bash que define y crea las tablas en la base de dagtos que acabamos de levantar. Suponiendo que estamos en la tuta principalm del proyecto ejecutamos los siguientes comandos:
 
 ```
 $ cd db
-$ docker build -t postgres_local .
-````
-
+$ docker build -t create_db .
+```
 donde:
-- `-t` es el nombre que le ponemos a la imagen , para luego identificarla cuando la querramos correr
+- `-t` es el tag con el que creamos la imagen, como nos vamos a referir a ella cuando querramos correrla.
+
+Una vez buildeada, ya podemos ejecutarla.
 
 ```
-$ docker run --rm --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 postgres_local
+$ docker run --rm -e DB_HOST=pg-docker \
+-e DB_USER=postgres \
+-e DB_DATABASE=postgres \
+-e PGPASSWORD=docker \
+--net=tp-itba create_db
 ```
 
-donde:
-- `--rm` es una buena práctica automáticamente remover el container
-- `--name` es el nombre con el que nos vamos a referir al container una vez que esta corriendo
-- `-e` le pasamos la variable de entorno, en este caso es la contraseña para la base de datos
-- `-d` para que corra en segundo plano
-- `-p` enlaza nuestro puerto 5432 con el puerto 5432 del container
+Aca de vuelta le pasamos algunas variables de entorno necesarias para crear la conexión a la base de datos, como también el nombre de la red a la que queremos que el container se conecte.
 
-Una vez que ya este corriendo, ingresamos a la terminal del container para ejecutar un script de bash y crear la estructura de las tablas. Para eso, ejecutamos lo siguiente:
-```
-$ docker exec -it pg-docker bash
-```
-Una vez dentro del container, ejecutamos el script de bash:
-```
-$ ./create_database.sh
-````
-
-Vamos a ver que nos va a listar los comandos que esta realizando, si todo sale bien, deberiamos ver lo siguiente loggeado en la consola:
+Vamos a ver que nos empieza a listar los comandos que esta realizando, si todo sale bien, deberiamos ver lo siguiente loggeado en la consola:
 
 ![create database logs](./assets/db/logs_create_database.png)
 
-Ya podemos salir de la terminal del container:
-```
-$ exit
-````
-
-Ok, ya tenemos levantada la base de datos, con las tablas y relaciones creadas.
-A su vez, podemos graficar el diagrama ER de la base para entender cuales son estas relaciones:
+Ok, ya tenemos levantada la base de datos, con las tablas y relaciones creadas. A su vez, podemos graficar el diagrama ER de la base para entender cuales son estas relaciones:
 
 ![diagrama ER](./assets/db/ER_Diagram.png)
 
@@ -76,13 +128,10 @@ Para esto, volvemos al directorio principal del proyecto e ingresamos al directo
 $ cd ../
 $ cd etl
 $ docker build -t etl .
-$ docker run --rm --link pg-docker:pg-docker etl
+$ docker run --rm --net=tp-itba etl
 ```
 
-donde:
-- `--link` sirve para conectarnos a `pg-docker` (que es el container que levantamos en el paso anterior que tiene la base de datos), desde este container que estamos levantando.
-
-Habiendo ejecutado ese comando, vamos a ver los logs impresos en la terminal de que estan insertando los valores en cada tabla correspondiente
+Habiendo ejecutado ese comando, vamos a ver los logs impresos en la terminal de que se descargó la base de la F1, y se estan insertando en cada tabla correspondiente:
 
 ![logs ETL](./assets/etl/logs_etl.png)
 
@@ -96,9 +145,9 @@ Para ejecutar estos reportes, buildeamos y corremos la imagen de Docker que se e
 $ cd ../
 $ cd reports
 $ docker build -t reports .
-$ docker run --rm --link pg-docker:pg-docker reports
+$ docker run --rm --net=tp-itba reports
 ```
-Acá vamos a ver como se van imprimiendo los resultados de las queries en la terminal. Es importante notar que segun la fecha en la que se ejecuten las queries, los resultados pueden variar levemente a los que yo voy a presentar, dado que esta información se va actualizando con las nuevas carreras.
+Acá vamos a ver como se van imprimiendo los resultados de las queries en la terminal. Es importante notar que segun la fecha en la que se ejecute el proceso anterior, los resultados pueden variar levemente a los que yo voy a presentar, dado que esta información se va actualizando con las nuevas carreras.
 
 Inspeccionemos los resultados de cada query:
 
