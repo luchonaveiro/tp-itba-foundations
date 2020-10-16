@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  pg-docker:
+    image: "postgres:13.0"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_USER=postgres
+      - POSTGRES_DATABASE=postgres
+    container_name: "pg-docker"
+    healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DATABASE"]
+            timeout: 20s
+            retries: 10
+  create-db:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    container_name: "create-db"
+    environment:
+      - DB_HOST=pg-docker
+      - DB_USER=postgres
+      - DB_DATABASE=postgres
+      - PGPASSWORD=docker
+    depends_on:
+      pg-docker:
+        condition: service_healthy
+
+networks:
+  default:
+    external:
+      name: tp-itba
+

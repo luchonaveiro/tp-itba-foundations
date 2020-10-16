@@ -36,6 +36,7 @@ Osea, generando un árbol del direcorio, obtenemos lo siguiente:
    - Archivos referentes a la base de datos
  ┣ 📂db
  ┃ ┣ 📜Dockerfile
+ ┃ ┣ 📜docker-compose.yml
  ┃ ┣ 📜create_database.sh
  ┃ ┗ 📜init.sql
    - Archivos referentes a la ejecución del ETL
@@ -70,47 +71,19 @@ Primero vamos a crear la red en la que van a correr todos los containers. De est
 $ docker network create tp-itba
 ```
 
-
 ## **Base de Datos**
 
 Como comenté, elegí usar PostgreSQL como base de datos para guardar toda la información de la F1.
-La vamos a levantar mediante un container de Docker. Para ello, tenemos que ejecutar lo siguiente
 
-```
-$ docker run --rm --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 --net=tp-itba postgres:13.0
-````
+La vamos a levantar mediante docker compose. Esto va a levantar la base de datos (va a correr una imagen de postgres), va a esperar a que la base este operativa, y después va a correr el container generado por la imagen que está en el directorio `/db`, que contiene un script de bash que ejecuta un script de sql que crea todas las tablas necesarias. A su vez, indicamos en el docker-compose.yml, que se conecte a la red previamente creada, asi podemos comunicarnos con el resto de los containers.
 
-donde:
-- `--rm` es una buena práctica automáticamente remover el container.
-- `--name` es el nombre con el que nos vamos a referir al container una vez que esta corriendo, esto es super útil para referirnos con este nombre a este container dentro de la red que creamos previamente.
-- `-e` le pasamos una variable de entorno, en este caso es la contraseña para la base de datos.
-- `-d` para que corra en segundo plano.
-- `-p` enlaza nuestro puerto 5432 con el puerto 5432 del container.
-- `--net` conecta el container a la red `tp-itba` que creamos al principio de todo.
-- `postgres:13.0` es la imagen y version que queremos correr. Si no la encuentra en registry local, la descarrga de Docker Hub.
-
-Una vez que ya este corriendo, quiere decir que se esta exponiendo una base de datos en el puerto 5432. Ahora buildeamos otro container y le copiamos el script de bash que define y crea las tablas en la base de dagtos que acabamos de levantar. Suponiendo que estamos en la tuta principalm del proyecto ejecutamos los siguientes comandos:
-
+Para lograr todo esto, ejecutamos los siguientes comandos,suponiendo que estamos en la tuta principal del proyecto:
 ```
 $ cd db
-$ docker build -t create_db .
-```
-donde:
-- `-t` es el tag con el que creamos la imagen, como nos vamos a referir a ella cuando querramos correrla.
-
-Una vez buildeada, ya podemos ejecutarla.
-
-```
-$ docker run --rm -e DB_HOST=pg-docker \
--e DB_USER=postgres \
--e DB_DATABASE=postgres \
--e PGPASSWORD=docker \
---net=tp-itba create_db
+$ docker-compose up
 ```
 
-Aca de vuelta le pasamos algunas variables de entorno necesarias para crear la conexión a la base de datos, como también el nombre de la red a la que queremos que el container se conecte.
-
-Vamos a ver que nos empieza a listar los comandos que esta realizando, si todo sale bien, deberiamos ver lo siguiente loggeado en la consola:
+Vamos a ver que primero buildea la imagen de `create-db`, luego crea `pg-docker` y al final crea `create-db`. Si todo sale bien, vamos a ver que se crearon las tablas correctamente:
 
 ![create database logs](./assets/db/logs_create_database.png)
 
@@ -122,11 +95,20 @@ Ok, ya tenemos levantada la base de datos, con las tablas y relaciones creadas. 
 
 Una vez que ya tenemos la base de datos corriendo, iniciamos el proceso de ETL de los datos. Este proceso consiste en decargar los datos crudos desde internet, hacerle una pequeña modificación e insertarlos en cada tabla correspondiente.
 
-Para esto, volvemos al directorio principal del proyecto e ingresamos al directorio `/etl`, y buildeamos la imagen de Docker que contiene el script de Python con el proceso de ETL.
+Para esto, abrimos otra terminal y nos dirigimos al directorio `/etl` de este proyecto, y buildeamos la imagen de Docker que contiene el script de Python con el proceso de ETL.
 
 ```
 $ cd ../etl
 $ docker build -t etl .
+```
+
+donde:
+- `-t` es el tag con el que creamos la imagen, como nos vamos a referir a ella cuando querramos correrla.
+
+Una vez buildeada, ya podemos ejecutarla.
+
+
+```
 $ docker run --rm -e DATABASE_HOST=pg-docker \
 -e DATABASE_PORT=5432 \
 -e DATABASE=postgres \
@@ -134,6 +116,11 @@ $ docker run --rm -e DATABASE_HOST=pg-docker \
 -e DATABASE_PASSWORD=docker \
 --net=tp-itba etl
 ```
+
+donde:
+- `--rm` es una buena práctica automáticamente remover el container.
+- `-e` le pasamos algunas variable de entorno, en este caso las relacionadas a la base de datos.
+- `--net` conecta el container a la red `tp-itba` que creamos al principio de todo.
 
 Habiendo ejecutado ese comando, vamos a ver los logs impresos en la terminal de que se descargó la base de la F1, y se estan insertando en cada tabla correspondiente:
 
