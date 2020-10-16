@@ -98,7 +98,7 @@ Una vez que ya tenemos la base de datos corriendo, iniciamos el proceso de ETL d
 Para esto, abrimos otra terminal y nos dirigimos al directorio `/etl` de este proyecto, y buildeamos la imagen de Docker que contiene el script de Python con el proceso de ETL.
 
 ```
-$ cd ../etl
+$ cd etl
 $ docker build -t etl .
 ```
 
