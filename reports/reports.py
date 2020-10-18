@@ -2,6 +2,7 @@ import psycopg2
 import pandas as pd
 import logging
 import os
+import time
 
 pd.set_option('display.max_columns', None)  
 pd.set_option('display.max_rows', None)  
@@ -27,15 +28,18 @@ def get_conn():
 
 conn, cur = get_conn()
 
-
 if __name__=='__main__':
-    for query in os.listdir('queries/'):
+    queries = os.listdir('queries/')
+    queries.sort()
+
+    for query in queries:
         with open('queries/{}'.format(query),'r') as f:
             query_str = f.read()
 
         query_df = pd.read_sql_query(query_str, conn)
         logger.info('Resultados {}:'.format(query.replace('.csv','')))
         logger.info(query_df)
+        query_df.to_csv('results/{}'.format(query.replace('.sql','.csv')))
 
     cur.close()
     conn.close()

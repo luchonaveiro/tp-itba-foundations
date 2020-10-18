@@ -28,5 +28,5 @@ select constructors.name,
        a.max_ms,
        b.n_fastest_ps
 from avg_pitstops a
-left join pit_stop_record b on a.constructor_id=b.constructor_id
+join pit_stop_record b on a.constructor_id=b.constructor_id
 join f1.constructors on a.constructor_id=constructors.id
