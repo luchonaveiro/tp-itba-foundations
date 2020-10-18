@@ -147,9 +147,9 @@ $ docker run --rm -e DATABASE_HOST=pg-docker \
 -v $PWD/results:/app/results \
 --net=tp-itba reports
 ```
-Donde los argumentos son iguales al caso del ETL, excepto por el `-v`, este argumento nos monta un directorio `/results` (en este caso también lo crea, dado que no existe) de nuestro sistema, con el directorio `/app/results` del container. Ese directorio es donde se guardan los resultados de las queries, por si queremos persisitir los resultados. 
+Donde los argumentos son iguales al caso del ETL, excepto por el `-v`, este argumento nos monta un directorio `/results` (en este caso también lo crea, dado que no existe) de nuestro sistema, con el directorio `/app/results` del container. Ese directorio es donde se van a guardar los resultados de las queries, por si queremos persisitir los resultados. 
 
-NOTA: La sintaxis de `$PWD/results` que indica la ruta de nuestro sistema, puede llegar a variar un poco según el sistema operativo desde el que se ete corriendo el comando (este ejemplo es para MacOS).
+NOTA: La sintaxis de `$PWD/results` que indica la ruta de nuestro sistema, puede variar un poco según el sistema operativo desde el que se ete corriendo el comando (este ejemplo es para MacOS).
 
 Acá vamos a ver como se van imprimiendo los resultados de las queries en la terminal. Es importante notar que segun la fecha en la que se ejecute el proceso anterior, los resultados pueden variar levemente a los que yo voy a presentar, dado que esta información se va actualizando con las nuevas carreras.
 
