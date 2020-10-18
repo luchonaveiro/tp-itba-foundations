@@ -26,7 +26,7 @@ El proyecto esta separado en distintos directorios, uno para cada parte del proc
  - `/reports` tiene los scripts, queries, archivos y Dockerfile necesarios para construir los reportes consultado en la base de datos e imprimierlos en la términal.
  - `/assets` tiene las imagenes que estan incluidas en este README.
 
-Osea, generando un árbol del direcorio, obtenemos lo siguiente:
+Osea, generando un árbol del directorio, obtenemos lo siguiente:
 
 ```
 📦tp-itba-foundations
@@ -63,6 +63,10 @@ Osea, generando un árbol del direcorio, obtenemos lo siguiente:
  ┗ 📜Trabajo Practico - CDE - Foundations.pdf
 ```
 
+## **Recursos y Versiones**
+Este trabajo se realizo con las siguientes tecnologías y versiones:
+ - Docker (version: 19.03.13, API version: 1.40)
+ - Docker Compose (version: 1.27.4)
 
 ## **Docker Network**
 Primero vamos a crear la red en la que van a correr todos los containers. De esta manera podemos comunicar los containers entre si. Ejecutamos el siguiente comando que crea la red _tp-itba_:
@@ -83,7 +87,7 @@ $ cd db
 $ docker-compose up
 ```
 
-Vamos a ver que primero buildea la imagen de `create-db`, luego crea `pg-docker` y al final crea `create-db`. Si todo sale bien, vamos a ver que se crearon las tablas correctamente:
+Vamos a ver que primero va a pullear la imagen de `postgres:13.0`, leuego buildea la imagen de `create-db`, luego crea `pg-docker` (osea, corre la imagen de postgres) y al final crea `create-db`. Si todo sale bien, vamos a ver que se crearon las tablas correctamente:
 
 ![create database logs](./assets/db/logs_create_database.png)
 
@@ -119,7 +123,7 @@ $ docker run --rm -e DATABASE_HOST=pg-docker \
 
 donde:
 - `--rm` es una buena práctica automáticamente remover el container.
-- `-e` le pasamos algunas variable de entorno, en este caso las relacionadas a la base de datos.
+- `-e` le pasamos algunas variable de entorno, en este caso las relacionadas a la base de datos. Acá se ve como el DATABASE_HOST es el nombre con el que llamamos al container en el archivo docker-compose.yml que se encuenra en /db. Por eso es importante haberle definido un nombre.
 - `--net` conecta el container a la red `tp-itba` que creamos al principio de todo.
 
 Habiendo ejecutado ese comando, vamos a ver los logs impresos en la terminal de que se descargó la base de la F1, y se estan insertando en cada tabla correspondiente:
@@ -140,15 +144,20 @@ $ docker run --rm -e DATABASE_HOST=pg-docker \
 -e DATABASE=postgres \
 -e DATABASE_USER=postgres \
 -e DATABASE_PASSWORD=docker \
+-v $PWD/results:/app/results \
 --net=tp-itba reports
 ```
+Donde los argumentos son iguales al caso del ETL, excepto por el `-v`, este argumento nos monta un directorio `/results` (en este caso también lo crea, dado que no existe) de nuestro sistema, con el directorio `/app/results` del container. Ese directorio es donde se guardan los resultados de las queries, por si queremos persisitir los resultados. 
+
+NOTA: La sintaxis de `$PWD/results` que indica la ruta de nuestro sistema, puede llegar a variar un poco según el sistema operativo desde el que se ete corriendo el comando (este ejemplo es para MacOS).
+
 Acá vamos a ver como se van imprimiendo los resultados de las queries en la terminal. Es importante notar que segun la fecha en la que se ejecute el proceso anterior, los resultados pueden variar levemente a los que yo voy a presentar, dado que esta información se va actualizando con las nuevas carreras.
 
 Inspeccionemos los resultados de cada query:
 
 ### Query 1
 
-Realizando esta consulta, obtenemos los pilotos que terminaron en una posicion menor o igual a 10 en las carrreras de los ultimos 5 años. Tambien devolvemos la cantidad de veces que hicieron la vuelta mas rapida de la carrera. Los resultados estan ordenados decrecientemente por la cantidad de puntos obtienidos en estos 5 años. 
+Realizando esta consulta, obtenemos los pilotos que terminaron en una posicion menor o igual a 10 en las carrreras de los ultimos 5 años. Tambien devolvemos la cantidad de veces que hicieron la vuelta mas rapida de la carrera y los puntos obtenidos en estos 5 años. Los resultados estan ordenados decrecientemente por la cantidad de puntos obtienidos en estos 5 años. 
 
 Obvio que encontramos que los dos piolotos de Mercedez (Hamilton y Bottas) estan ahi arriba, pero lo que si es interesante, es encontrar a Sergio Perez en la posicion 8. Quizas los directivos de Force India realizaron esta query cuando decidieron no renovarle a Esteban Ocon y quedarse con Perez en el 2018, que fue muy criticada por la proyección que tenía Ocon.
 
@@ -168,7 +177,7 @@ En este reporte, encontramos la proporción de pilotos en toda la historia, que 
 
 Haciendo un análisis parecido, llegamos a que el 63% de los que largaron en la primer posición, llegaron en primer, segundo o tercer lugar. Mientras que el 54% de los pilotos que largaron en segundo lugar, se subieron al podio.
 
-Es muy claro como se acortan las chances de ganar o subirse al podio a medida que arrancas más lejos de la carrera, dejandole un papel fundamental a la qualy del dia anterior (la que define la posición de largada)
+Es muy claro como decrecen las chances de ganar o subirse al podio a medida que arrancas más lejos de la carrera, dejandole un papel fundamental a la qualy del dia anterior (la que define la posición de largada)
 
 ![logs query 3](./assets/reports/query_3_log.png)
 
@@ -197,10 +206,22 @@ Aca nos centramos más en los equipos y su performance en términos de paradas e
 Aca respondemos la pregunta que nos estamos haciendo todos (o deberiamos). 
 
 **Schumacher vs Hamilton**: quien es el rey de la F1?
-Vemos que con la victoria de este domingo 11/10 en el GP de Eifel, Hamilton lo empato a Schumacher en la cantidad de carreras ganadas, solo que Hamilton lo hizo en menos carreras, llegando a ganar el 34.8% de sus carreras y registrando 61.3% de podios, mientras que Schumacher gano el 29.5% de todas las carreras y ese subió al podio en el 50.3%.
+Vemos que con la victoria de la última carrera disputada el domingo 11/10 en el GP de Eifel, Hamilton lo empato a Schumacher en la cantidad de carreras ganadas, solo que Hamilton lo hizo en menos carreras, llegando a ganar el 34.8% de sus carreras y registrando 61.3% de podios, mientras que Schumacher gano el 29.5% de todas las carreras y ese subió al podio en el 50.3%.
 
 Obviamente que son dos monstruos de la F1, y no queda otra que disfrutar de las carreras de Hamilton que sigue estando vigente.
 
-![logs query 6](./assets/reports/query_7_log.png)
+![logs query 7](./assets/reports/query_7_log.png)
 
 Aca hay una [nota](https://www.infobae.com/deportes/2020/10/12/hamilton-alcanzo-el-record-historico-de-schumacher-es-el-mejor-piloto-en-la-historia-de-la-formula-1/) publicada en Infobae después de la carrera  del 11/10, donde realizan estas y otras comparaciones entre Shcumacher y Hamilton.
+
+## **Clean Up**
+Una vez que obtuvimos los insights necesarios, ya podemos limpiar todo el proyecto. Para eso, abrimos otra terminal en `/db`:
+```
+$ docker-compose down
+```
+
+Con este comando, dejamos de exponer la base de datos. Ahora ya podemos remover la red creada al principio de todo:
+```
+$ docker network rm tp-itba
+```
+

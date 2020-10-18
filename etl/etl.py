@@ -55,7 +55,7 @@ if __name__=='__main__':
         data = pd.read_csv('db/{}'.format(file), na_values='\\N')
         data = data.replace({np.nan: None})
 
-        logger.info('Uploading {} to the table {}...'.format(len(data), tablename))
+        logger.info('Uploading {} records to the table {}...'.format(len(data), tablename))
         args_str = b','.join(cur.mogrify('('+'%s,'*(len(data.columns)-1) + '%s)', x) for x in tuple(map(tuple,data.values)))
         cur.execute("INSERT INTO f1.{} VALUES ".format(tablename) + args_str.decode("utf-8"))
         conn.commit()
