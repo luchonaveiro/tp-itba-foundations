@@ -64,7 +64,7 @@ Osea, generando un árbol del directorio, obtenemos lo siguiente:
 ```
 
 ## **Tecnologías y Versiones**
-Este trabajo se realizo con las siguientes tecnologías y versiones:
+Es importante remarcar que este trabajo se realizo con las siguientes tecnologías y versiones:
  - Docker (version: 19.03.13, API version: 1.40)
  - Docker Compose (version: 1.27.4)
 
