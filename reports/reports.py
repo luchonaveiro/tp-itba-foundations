@@ -30,8 +30,8 @@ conn, cur = get_conn()
 
 if __name__=='__main__':
 
-    if not os.path.exists('/results'):
-            os.makedirs('/results')
+    if not os.path.exists('results'):
+            os.makedirs('results')
 
     queries = os.listdir('queries/')
     queries.sort()
