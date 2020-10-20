@@ -87,7 +87,7 @@ $ cd db
 $ docker-compose up
 ```
 
-Vamos a ver que primero va a pullear la imagen de `postgres:13.0`, leuego buildea la imagen de `create-db`, luego crea `pg-docker` (osea, corre la imagen de postgres) y al final crea `create-db`. Si todo sale bien, vamos a ver que se crearon las tablas correctamente:
+Vamos a ver que primero va a pullear la imagen de `postgres:13.0`, luego buildea la imagen de `create-db`, luego crea `pg-docker` (osea, corre la imagen de postgres) y al final crea `create-db`. Si todo sale bien, vamos a ver que se crearon las tablas correctamente:
 
 ![create database logs](./assets/db/logs_create_database.png)
 
@@ -97,7 +97,7 @@ Ok, ya tenemos levantada la base de datos, con las tablas y relaciones creadas. 
 
 ## **ETL**
 
-Una vez que ya tenemos la base de datos corriendo, iniciamos el proceso de ETL de los datos. Este proceso consiste en decargar los datos crudos desde internet, hacerle una pequeña modificación e insertarlos en cada tabla correspondiente.
+Una vez que ya tenemos la base de datos corriendo, iniciamos el proceso de ETL de los datos. Este proceso consiste en descargar los datos crudos desde internet, hacerle una pequeña modificación e insertarlos en cada tabla correspondiente.
 
 Para esto, abrimos otra terminal y nos dirigimos al directorio `/etl` de este proyecto, y buildeamos la imagen de Docker que contiene el script de Python con el proceso de ETL.
 
@@ -123,7 +123,7 @@ $ docker run --rm -e DATABASE_HOST=pg-docker \
 
 donde:
 - `--rm` es una buena práctica automáticamente remover el container.
-- `-e` le pasamos algunas variable de entorno, en este caso las relacionadas a la base de datos. Acá se ve como el DATABASE_HOST es el nombre con el que llamamos al container de la imagen que se encuentra en /db (tal como está especificado en el archivo docker-compose.yml de ese directorio). Por eso es importante haberle definido un nombre.
+- `-e` le pasamos algunas variables de entorno, en este caso las relacionadas a la base de datos. Acá se ve como el DATABASE_HOST es el nombre con el que llamamos al container de la imagen que se encuentra en /db (tal como está especificado en el archivo docker-compose.yml de ese directorio). Por eso es importante haberle definido un nombre.
 - `--network` conecta el container a la red `tp-itba` que creamos al principio de todo.
 
 Habiendo ejecutado ese comando, vamos a ver los logs impresos en la terminal de que se descargó la base de la F1, y se estan insertando en cada tabla correspondiente:
