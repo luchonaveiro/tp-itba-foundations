@@ -118,13 +118,13 @@ $ docker run --rm -e DATABASE_HOST=pg-docker \
 -e DATABASE=postgres \
 -e DATABASE_USER=postgres \
 -e DATABASE_PASSWORD=docker \
---net=tp-itba etl
+--network=tp-itba etl
 ```
 
 donde:
 - `--rm` es una buena práctica automáticamente remover el container.
-- `-e` le pasamos algunas variable de entorno, en este caso las relacionadas a la base de datos. Acá se ve como el DATABASE_HOST es el nombre con el que llamamos al container en el archivo docker-compose.yml que se encuenra en /db. Por eso es importante haberle definido un nombre.
-- `--net` conecta el container a la red `tp-itba` que creamos al principio de todo.
+- `-e` le pasamos algunas variable de entorno, en este caso las relacionadas a la base de datos. Acá se ve como el DATABASE_HOST es el nombre con el que llamamos al container de la imagen que se encuentra en /db (tal como está especificado en el archivo docker-compose.yml de ese directorio). Por eso es importante haberle definido un nombre.
+- `--network` conecta el container a la red `tp-itba` que creamos al principio de todo.
 
 Habiendo ejecutado ese comando, vamos a ver los logs impresos en la terminal de que se descargó la base de la F1, y se estan insertando en cada tabla correspondiente:
 
@@ -145,7 +145,7 @@ $ docker run --rm -e DATABASE_HOST=pg-docker \
 -e DATABASE_USER=postgres \
 -e DATABASE_PASSWORD=docker \
 -v $PWD/results:/app/results \
---net=tp-itba reports
+--network=tp-itba reports
 ```
 Donde los argumentos son iguales al caso del ETL, excepto por el `-v`, este argumento nos monta un directorio `/results` (en este caso también lo crea, dado que no existe) de nuestro sistema, con el directorio `/app/results` del container. Ese directorio es donde se van a guardar los resultados de las queries, por si queremos persisitir los resultados. 
 

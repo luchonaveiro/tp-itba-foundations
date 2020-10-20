@@ -32,4 +32,3 @@ networks:
   default:
     external:
       name: tp-itba
-
