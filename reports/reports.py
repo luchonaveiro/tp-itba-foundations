@@ -2,7 +2,6 @@ import psycopg2
 import pandas as pd
 import logging
 import os
-import time
 
 pd.set_option('display.max_columns', None)  
 pd.set_option('display.max_rows', None)  
