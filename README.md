@@ -81,6 +81,8 @@ Como comenté, elegí usar PostgreSQL como base de datos para guardar toda la in
 
 La vamos a levantar mediante docker compose. Esto va a levantar la base de datos (va a correr una imagen de postgres), va a esperar a que la base este operativa, y después va a correr el container generado por la imagen que está en el directorio `/db`, que contiene un script de bash que ejecuta un script de sql que crea todas las tablas necesarias. A su vez, indicamos en el docker-compose.yml, que se conecte a la red previamente creada, asi podemos comunicarnos con el resto de los containers.
 
+Tanto la definición de los campos de las tablas como las foreign keys, las obtengo de [acá](http://ergast.com/schemas/f1db_schema.txt).
+
 Para lograr todo esto, ejecutamos los siguientes comandos,suponiendo que estamos en la tuta principal del proyecto:
 ```
 $ cd db
@@ -126,7 +128,7 @@ donde:
 - `-e` le pasamos algunas variables de entorno, en este caso las relacionadas a la base de datos. Acá se ve como el DATABASE_HOST es el nombre con el que llamamos al container de la imagen que se encuentra en /db (tal como está especificado en el archivo docker-compose.yml de ese directorio). Por eso es importante haberle definido un nombre.
 - `--network` conecta el container a la red `tp-itba` que creamos al principio de todo.
 
-Habiendo ejecutado ese comando, vamos a ver los logs impresos en la terminal de que se descargó la base de la F1, y se estan insertando en cada tabla correspondiente:
+Habiendo ejecutado ese comando, vamos a ver los logs impresos en la terminal de que se descargó la base de la F1, y se estan insertando en cada tabla correspondiente, y al final de todo el script, define los constraints de las foreign keys entre las distintas tablas:
 
 ![logs ETL](./assets/etl/logs_etl.png)
 

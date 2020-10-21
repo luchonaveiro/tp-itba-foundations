@@ -18,7 +18,7 @@ CREATE TABLE f1.races
 	id int primary key,
 	year int not null,
 	round int not null,
-	circuit_id int not null references f1.circuits(id),
+	circuit_id int not null,
 	name varchar(255) not null,
 	date timestamp not null,
 	time varchar(255),
@@ -37,8 +37,8 @@ CREATE TABLE f1.constructors
 CREATE TABLE f1.constructor_results
 (
 	id int primary key,
-	race_id int not null references f1.races(id),
-	constructor_id int not null references f1.constructors(id),
+	race_id int not null,
+	constructor_id int not null,
 	points float,
 	status varchar(255)
 
@@ -47,8 +47,8 @@ CREATE TABLE f1.constructor_results
 CREATE TABLE f1.constructor_standings
 (
 	id int primary key,
-	race_id int not null references f1.races(id),
-	constructor_id int not null references f1.constructors(id),
+	race_id int not null,
+	constructor_id int not null,
 	points float not null,
 	position int,
 	position_text varchar(255),
@@ -71,8 +71,8 @@ CREATE TABLE f1.drivers
 CREATE TABLE f1.driver_standings
 (
 	id int primary key,
-	race_id int not null references f1.races(id),
-	driver_id int not null references f1.drivers(id),
+	race_id int not null,
+	driver_id int not null,
 	points float not null,
 	position int,
 	position_text varchar(255),
@@ -81,8 +81,8 @@ CREATE TABLE f1.driver_standings
 
 CREATE TABLE f1.lap_times
 (
-	race_id int references f1.races(id),
-	driver_id int references f1.drivers(id),
+	race_id int,
+	driver_id int,
 	lap int,
 	position float,
 	time varchar(255),
@@ -92,8 +92,8 @@ CREATE TABLE f1.lap_times
 
 CREATE TABLE f1.pit_stops
 (
-	race_id int references f1.races(id),
-	driver_id int references f1.drivers(id),
+	race_id int,
+	driver_id int,
 	stop int,
 	lap float,
 	time varchar(255),
@@ -105,23 +105,22 @@ CREATE TABLE f1.pit_stops
 CREATE TABLE f1.qualifying
 (
 	id int primary key,
-	race_id int not null references f1.races(id),
-	driver_id int not null references f1.drivers(id),
-	constructor_id int not null references f1.constructors(id),
+	race_id int not null,
+	driver_id int not null,
+	constructor_id int not null,
 	number int not null,
 	position float,
 	q1 varchar(255),
 	q2 varchar(255),
 	q3 varchar(255)
-
 );
 
 CREATE TABLE f1.results
 (
 	id int primary key,
-	race_id int not null references f1.races(id),
-	driver_id int not null references f1.drivers(id),
-	constructor_id int not null references f1.constructors(id),
+	race_id int not null,
+	driver_id int not null,
+	constructor_id int not null,
 	number float,
 	grid int not null,
 	position float,
@@ -149,4 +148,3 @@ CREATE TABLE f1.status
 	status_id int primary key,
 	status varchar(255) not null
 );
-

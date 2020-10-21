@@ -42,14 +42,7 @@ if __name__=='__main__':
 
     conn, cur = get_conn()
 
-    # hardcdeo el nombre de los archivos porque sino me rompe cuando inserto los valores de una tabla que tiene un foreign key,
-    # y todavia no inserte los valores en esa tabla
-    # con este orden, se me respetan bien las inserciones y las dependencias de tablas 
-    files = ['circuits.csv', 'races.csv', 'constructors.csv', 'constructor_results.csv', 'constructor_standings.csv',
-            'drivers.csv', 'driver_standings.csv', 'lap_times.csv', 'pit_stops.csv', 'qualifying.csv', 'results.csv',
-            'seasons.csv', 'status.csv']
-
-    for file in files:
+    for file in os.listdir('db'):
         
         tablename = file.replace('.csv','')
         data = pd.read_csv('db/{}'.format(file), na_values='\\N')
@@ -61,6 +54,16 @@ if __name__=='__main__':
         conn.commit()
 
         logger.info('{} uploaded to the Database'.format(tablename))
-        
+
+    logger.info('Creating Foreign Keys constraints...')
+    
+    with open('foreign_keys_query.sql','r') as f:
+        constraints_query = f.read()
+
+    cur.execute(constraints_query)
+    conn.commit()
+
+    logger.info('Foreign Keys constraints created')
+
     cur.close()
     conn.close()
