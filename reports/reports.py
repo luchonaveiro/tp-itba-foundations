@@ -7,7 +7,9 @@ pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
 
 logging.basicConfig(
-    level=logging.INFO, handlers=[logging.StreamHandler()], format="%(message)s"
+    level=logging.INFO,
+    handlers=[logging.StreamHandler()],
+    format="%(message)s"
 )
 
 logger = logging.getLogger(__name__)
