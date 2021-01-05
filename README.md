@@ -163,7 +163,39 @@ Realizando esta consulta, obtenemos los pilotos que terminaron en una posición 
  
 Obvio que encontramos que los dos pilotos de Mercedez (Hamilton y Bottas) están ahí arriba, pero lo que sí es interesante, es encontrar a Sergio Perez en la posición 8. Quizás los directivos de Force India realizaron esta query cuando decidieron no renovarle a Esteban Ocon y quedarse con Perez en el 2018, que fue muy criticada por la proyección que tenía Ocon.
  
-![logs query 1](./assets/reports/query_1_log.png)
+|forename|surname    |id  |earned_points|times_fastest_lap|
+|--------|-----------|----|-------------|-----------------|
+|Lewis   |Hamilton   |1   |1794.0       |52               |
+|Valtteri|Bottas     |822 |1124.0       |16               |
+|Sebastian|Vettel     |20  |1106.0       |38               |
+|Max     |Verstappen |830 |1046.0       |10               |
+|Daniel  |Ricciardo  |817 |758.0        |15               |
+|Kimi    |Räikkönen  |8   |687.0        |45               |
+|Nico    |Rosberg    |3   |385.0        |20               |
+|Sergio  |Pérez      |815 |383.0        |4                |
+|Charles |Leclerc    |844 |366.0        |4                |
+|Carlos  |Sainz      |832 |300.0        |1                |
+|Nico    |Hülkenberg |807 |231.0        |2                |
+|Pierre  |Gasly      |842 |177.0        |2                |
+|Esteban |Ocon       |839 |172.0        |0                |
+|Alexander|Albon      |848 |156.0        |0                |
+|Lance   |Stroll     |840 |124.0        |0                |
+|Fernando|Alonso     |4   |121.0        |23               |
+|Lando   |Norris     |846 |114.0        |2                |
+|Romain  |Grosjean   |154 |104.0        |1                |
+|Kevin   |Magnussen  |825 |103.0        |2                |
+|Felipe  |Massa      |13  |96.0         |15               |
+|Daniil  |Kvyat      |826 |81.0         |1                |
+|Stoffel |Vandoorne  |838 |26.0         |0                |
+|Jenson  |Button     |18  |21.0         |8                |
+|Antonio |Giovinazzi |841 |17.0         |0                |
+|Marcus  |Ericsson   |828 |9.0          |0                |
+|Jolyon  |Palmer     |835 |9.0          |0                |
+|Pascal  |Wehrlein   |836 |6.0          |0                |
+|Brendon |Hartley    |843 |4.0          |0                |
+|Felipe  |Nasr       |831 |2.0          |0                |
+|Robert  |Kubica     |9   |1.0          |1                |
+
  
 ### Query 2
  
@@ -171,7 +203,44 @@ Acá obtenemos los pilotos que en los últimos 5 años tengan mas de 5 carreras 
  
 Volvemos a encontrar que Perez es algo superior que Esteban Ocon, y obvio que los top pilotos de los últimos 5 años estan ahi primeros.
  
-![logs query 2](./assets/reports/query_2_log.png)
+|forename|surname    |mean_points|n_races|
+|--------|-----------|-----------|-------|
+|Lewis   |Hamilton   |19.085106382978722|94     |
+|Nico    |Rosberg    |18.333333333333332|21     |
+|Valtteri|Bottas     |11.957446808510639|94     |
+|Sebastian|Vettel     |11.76595744680851|94     |
+|Max     |Verstappen |11.127659574468085|94     |
+|Daniel  |Ricciardo  |8.063829787234043|94     |
+|Kimi    |Räikkönen  |7.308510638297872|94     |
+|Charles |Leclerc    |6.90566037735849|53     |
+|Alexander|Albon      |4.875      |32     |
+|Sergio  |Pérez      |4.163043478260869|92     |
+|Lando   |Norris     |3.5625     |32     |
+|Carlos  |Sainz      |3.1914893617021276|94     |
+|Pierre  |Gasly      |3.0517241379310347|58     |
+|Esteban |Ocon       |2.819672131147541|61     |
+|Nico    |Hülkenberg |2.686046511627907|86     |
+|Felipe  |Massa      |2.4        |40     |
+|Fernando|Alonso     |2.0166666666666666|60     |
+|Lance   |Stroll     |1.7222222222222223|72     |
+|Daniil  |Kvyat      |1.1911764705882353|68     |
+|Romain  |Grosjean   |1.1063829787234043|94     |
+|Kevin   |Magnussen  |1.0957446808510638|94     |
+|Jenson  |Button     |0.9545454545454546|22     |
+|Stoffel |Vandoorne  |0.6190476190476191|42     |
+|Antonio |Giovinazzi |0.5        |34     |
+|Jolyon  |Palmer     |0.24324324324324326|37     |
+|Brendon |Hartley    |0.16       |25     |
+|Pascal  |Wehrlein   |0.15384615384615385|39     |
+|Marcus  |Ericsson   |0.14516129032258066|62     |
+|Felipe  |Nasr       |0.09523809523809523|21     |
+|Robert  |Kubica     |0.047619047619047616|21     |
+|Sergey  |Sirotkin   |0.047619047619047616|21     |
+|Esteban |Gutiérrez  |0.0        |21     |
+|Rio     |Haryanto   |0.0        |12     |
+|Nicholas|Latifi     |0.0        |11     |
+|George  |Russell    |0.0        |32     |
+
  
 ### Query 3
  
@@ -181,7 +250,43 @@ Haciendo un análisis parecido, llegamos a que el 63% de los que largaron en la 
  
 Es muy claro cómo decrecen las chances de ganar o subirse al podio a medida que arrancas más lejos de la carrera, dejándole un papel fundamental a la qualy del dia anterior (la que define la posición de largada)
  
-![logs query 3](./assets/reports/query_3_log.png)
+|grid|win_ratio  |podium_ratio|
+|----|-----------|------------|
+|1   |0.42       |0.63        |
+|2   |0.24       |0.54        |
+|3   |0.12       |0.46        |
+|4   |0.06       |0.34        |
+|5   |0.05       |0.25        |
+|6   |0.04       |0.19        |
+|7   |0.02       |0.14        |
+|8   |0.02       |0.11        |
+|9   |0.0        |0.09        |
+|10  |0.01       |0.06        |
+|11  |0.0        |0.04        |
+|12  |0.0        |0.04        |
+|13  |0.0        |0.03        |
+|14  |0.01       |0.03        |
+|15  |0.0        |0.01        |
+|16  |0.0        |0.02        |
+|17  |0.0        |0.01        |
+|18  |0.0        |0.01        |
+|19  |0.0        |0.0         |
+|20  |0.0        |0.01        |
+|21  |0.0        |0.0         |
+|22  |0.0        |0.0         |
+|23  |0.0        |0.0         |
+|24  |0.0        |0.0         |
+|25  |0.0        |0.0         |
+|26  |0.0        |0.01        |
+|27  |0.0        |0.0         |
+|28  |0.0        |0.04        |
+|29  |0.0        |0.0         |
+|30  |0.0        |0.0         |
+|31  |0.0        |0.0         |
+|32  |0.0        |0.06        |
+|33  |0.0        |0.0         |
+|34  |0.0        |0.0         |
+
  
 ### Query 4
  
@@ -189,19 +294,102 @@ Ahora bien, viendo el reporte anterior, encontramos que hubo pilotos que largaro
  
 Busquemos los pilotos que hayan largado una carrera después de la posición 15 (grid), pero que hayan terminado en el podio (1, 2 o 3) y la fecha en que realizaron tremenda hazaña. Ordenado por las carreras en las que el piloto arrancó desde más atrás.
  
-![logs query 4](./assets/reports/query_4_log.png)
+|forename|surname    |position_order|grid|date      |
+|--------|-----------|--------------|----|----------|
+|Jim     |Rathmann   |2             |32  |1957-05-30|
+|Onofre  |Marimón    |3             |28  |1954-07-17|
+|Paul    |Goldsmith  |3             |26  |1960-05-30|
+|Don     |Freeland   |3             |26  |1956-05-30|
+|Ron     |Flockhart  |3             |26  |1956-09-02|
+|George  |Amick      |2             |25  |1958-05-30|
+|Sebastian|Vettel     |3             |24  |2012-11-04|
+|Emerson |Fittipaldi |3             |24  |1980-03-30|
+|Niki    |Lauda      |2             |23  |1983-03-27|
+|Teo     |Fabi       |3             |23  |1984-06-24|
+|Lewis   |Hamilton   |3             |22  |2014-07-27|
+|John    |Watson     |1             |22  |1983-03-27|
+|Kimi    |Räikkönen  |3             |22  |2006-03-12|
+|John    |Watson     |3             |21  |1983-06-05|
+|Lewis   |Hamilton   |3             |21  |2016-08-28|
+|Wolfgang|von Trips  |3             |21  |1958-07-06|
+|Juan    |Pablo Montoya|2             |20  |2005-07-24|
+|Carlos  |Sainz      |3             |20  |2019-11-17|
+|Sebastian|Vettel     |2             |20  |2019-07-28|
+|Jarno   |Trulli     |3             |20  |2009-03-29|
+|Rubens  |Barrichello|3             |20  |2005-06-12|
+|Jacques |Laffite    |2             |20  |1985-11-03|
+|Lewis   |Hamilton   |3             |20  |2014-07-20|
+|Bill    |Vukovich   |1             |19  |1954-05-31|
+|Alexander|Wurz       |3             |19  |2007-06-10|
+|Max     |Verstappen |2             |18  |2018-10-21|
+|Mark    |Webber     |3             |18  |2011-04-17|
+|Peter   |Whitehead  |3             |18  |1950-07-02|
+|Rubens  |Barrichello|1             |18  |2000-07-30|
+|Riccardo|Patrese    |3             |18  |1982-04-04|
+|Jacques |Laffite    |3             |18  |1983-03-13|
+|Philippe|Streiff    |3             |18  |1985-11-03|
+|Eddie   |Cheever    |3             |17  |1989-06-04|
+|Nelson  |Piquet Jr. |2             |17  |2008-07-20|
+|Tiago   |Monteiro   |3             |17  |2005-06-19|
+|Kimi    |Räikkönen  |1             |17  |2005-10-09|
+|Lewis   |Hamilton   |3             |17  |2009-10-18|
+|John    |Watson     |1             |17  |1982-06-06|
+|Emerson |Fittipaldi |3             |17  |1971-07-04|
+|Rolf    |Stommelen  |3             |17  |1970-08-16|
+|Romain  |Grosjean   |3             |17  |2013-10-27|
+|Denny   |Hulme      |3             |16  |1970-08-02|
+|Mario   |Andretti   |3             |16  |1970-04-19|
+|Jackie  |Stewart    |1             |16  |1973-03-03|
+|Onofre  |Marimón    |3             |16  |1953-06-21|
+|Jacky   |Ickx       |2             |16  |1975-04-27|
+|Alan    |Jones      |3             |16  |1977-09-11|
+|Jean-Pierre|Jarier     |3             |16  |1979-07-14|
+|Fernando|Alonso     |3             |16  |2005-10-09|
+|Clay    |Regazzoni  |2             |16  |1979-05-27|
+|Jacques |Laffite    |3             |16  |1985-07-21|
+|Rubens  |Barrichello|3             |16  |2008-07-06|
+|Max     |Verstappen |3             |16  |2017-04-09|
+|Jyrki   |Järvilehto |3             |16  |1991-04-28|
+|Michael |Schumacher |1             |16  |1995-08-27|
+|Jean-Pierre|Beltoise   |2             |16  |1968-06-23|
+
  
 ### Query 5
  
 En este reporte entendemos que tanto suelen cambiarse de equipo los pilotos, se imprime la proporción de pilotos que hayan tenido más de uno, dos o tres equipos en los últimos 5 años
  
-![logs query 5](./assets/reports/query_5_log.png)
+|mas_un_equipo|mas_dos_equipos|mas_tres_equipos|
+|-------------|---------------|----------------|
+|0.4444444444444444|0.1388888888888889|0.0             |
+
  
 ### Query 6
  
 Aca nos centramos más en los equipos y su performance en términos de paradas en los boxes: cual fue su menor parada (en milisegundos), cual fue el tiempo promedio de paradas (en milisegundos) y cuantas veces fueron la parada más rápida de la carrera
  
-![logs query 6](./assets/reports/query_6_log.png)
+|name|min_ms     |mean_ms|max_ms |n_fastest_ps|
+|----|-----------|-------|-------|------------|
+|Marussia|13981      |34396.83690987124|1135937|5           |
+|McLaren|13173      |52996.2625994695|2010062|25          |
+|Caterham|14250      |33924.61825726141|1133381|4           |
+|Sauber|13201      |44546.52495974235|2008206|8           |
+|Haas F1 Team|15073      |68018.29761904762|2011147|3           |
+|Lotus F1|16120      |32463.750877192982|1133680|5           |
+|Ferrari|13259      |49937.5518134715|2010637|18          |
+|Virgin|13914      |24236.194805194806|49849  |1           |
+|Toro Rosso|14641      |44486.98389458272|2011266|12          |
+|Mercedes|13199      |57946.07301173403|2010361|29          |
+|Renault|12959      |63261.833746898265|2008979|4           |
+|Racing Point|16546      |104668.64406779662|1524989|2           |
+|AlphaTauri|17522      |164468.68421052632|1524139|1           |
+|Force India|14128      |50845.77011494253|2008504|4           |
+|Red Bull|13335      |51784.38331160365|2009643|41          |
+|Manor Marussia|16218      |84025.75|2009052|2           |
+|HRT |14160      |32677.766666666666|1004718|1           |
+|Alfa Romeo|17594      |86599.75968992249|1521825|3           |
+|Lotus|20652      |24444.21176470588|51684  |0           |
+|Williams|12897      |54748.44345616264|2009630|28          |
+
  
 ### Query 7
  
@@ -212,7 +400,11 @@ Vemos que con la victoria de la última carrera disputada el domingo 11/10 en el
  
 Obviamente que son dos monstruos de la F1, y no queda otra que disfrutar de las carreras de Hamilton que sigue estando vigente.
  
-![logs query 7](./assets/reports/query_7_log.png)
+|forename|surname    |wins|win_ratio|podiums|podium_ratio      |races|
+|--------|-----------|----|---------|-------|------------------|-----|
+|Lewis   |Hamilton   |91  |0.3486590038314176|160    |0.6130268199233716|261  |
+|Michael |Schumacher |91  |0.29545454545454547|155    |0.5032467532467533|308  |
+
  
 Aca hay una [nota](https://www.infobae.com/deportes/2020/10/12/hamilton-alcanzo-el-record-historico-de-schumacher-es-el-mejor-piloto-en-la-historia-de-la-formula-1/) publicada en Infobae después de la carrera  del 11/10, donde realizan estas y otras comparaciones entre Shcumacher y Hamilton.
  
