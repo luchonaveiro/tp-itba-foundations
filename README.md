@@ -1,4 +1,8 @@
 # **TP Final Foundations & Cloud Architect**
+
+[![Generic badge](https://img.shields.io/badge/PostgreSQL-13-blue.svg)](https://www.postgresql.org/)
+[![Generic badge](https://img.shields.io/badge/Python-3.6-blue.svg)](https://www.python.org/)
+[![Generic badge](https://img.shields.io/badge/Docker-20.10.6-blue.svg)](https://www.docker.com/)
  
 La base de datos elegida para este trabajo, es una correspondiente a la información sobre las carreras de Fórmula 1 (F1).
 Los datos los consigo de este [sitio](http://ergast.com/mrd/db/), y contiene datos de todas las carreras de la F1 desde el 5 de Mayo de 1950, hasta la última que ocurrió el 11 de octubre de 2020. Estos datos se actualizan unos minutos terminada cada carrera y tiene información de todo tipo, entre los que se destacan:
